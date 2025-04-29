@@ -1,0 +1,131 @@
+
+.container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+h1.form-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Secciones del formulario */
+.form-section {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background-color: #fefefe;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-section summary {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #2c3e50;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  list-style: none;
+  outline: none;
+}
+
+.form-section summary::marker {
+  display: none;
+}
+
+.form-section summary::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 0.5rem;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.form-section[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.section-content {
+  padding-top: 0.5rem;
+}
+
+/* Componentes */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label-separated {
+  display: block; /* El label ocupa toda la línea */
+  margin-bottom: 0.3rem; /* Espacio entre el label y el input */
+  font-size: 0.95rem;
+  color: #555; /* Un color un poco más oscuro para el label */
+  font-weight: bold; /* Resaltamos un poco el label */
+}
+
+.form-control-separated {
+  width: 100%;
+  padding: 0.75rem; /* Reducimos el padding vertical ya que el label está separado */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control-separated:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+.btn-submit {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #2980b9;
+  transform: scale(1.02);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+/* Cards (sin cambios específicos solicitados, se mantienen los estilos previos) */
+.card-container {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  padding: 1rem;
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.card-body {
+  padding: 1rem;
+}

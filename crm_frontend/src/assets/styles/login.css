@@ -1,0 +1,90 @@
+/* Solo se aplica al fondo del login */
+.login-wrapper {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    background: linear-gradient(0deg, #ffffff 6%, #cccccc 95%);
+    font-family: Arial, Helvetica, sans-serif;
+    color: #15171d;
+  }
+  
+  /* Caja principal del login */
+  .login-container {
+    width: 360px;
+    max-width: 90%;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  /* Título */
+  .login-container h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #e3000f;
+  }
+  
+  /* Campos del formulario */
+  .form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+    --underline-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-input {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--underline-color);
+    padding: 0.75rem 0.25rem;
+    font-size: 1rem;
+    color: #15171d;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-input:focus {
+    border-bottom-color: #e3000f;
+  }
+  
+  .form-input:focus + .form-label,
+  .form-input:not(:placeholder-shown) + .form-label {
+    transform: translateY(-1.2rem) scale(0.8);
+    transform-origin: left top;
+    color: #e3000f;
+  }
+  
+  .form-label {
+    position: absolute;
+    top: 0;
+    left: 0.25rem;
+    pointer-events: none;
+    transform: translateY(0.75rem);
+    transition: transform 0.3s ease, color 0.3s ease;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Botón */
+  .form-button {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background: #e3000f;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .form-button:hover,
+  .form-button:focus {
+    background: #cb0020;
+  }
+  
