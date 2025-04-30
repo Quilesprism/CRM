@@ -155,7 +155,6 @@ function VerVenta() {
           </div>
         )}
 
-        <Input label="Autorización de Datos (URL)" value={ventaData.link_autorizacion} readOnly />
 
         {ventaData.fecha_grabacion_contrato && (
           <Input label="Fecha Grabación Contrato" value={new Date(ventaData.fecha_grabacion_contrato).toLocaleString()} readOnly />

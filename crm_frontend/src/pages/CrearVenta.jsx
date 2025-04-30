@@ -64,9 +64,9 @@ const opcionesAdicionales = [
   { value: "prime", label: "Prime" },
 ];
 
-const opcionesTerceros = [
-  { value: "TITULAR", label: "Titular" },
-  { value: "TERCERO", label: "Tercero" },
+const opcionesTercerosInicial = [
+  { value: "Titular", label: "Titular" },
+  { value: "Tercero", label: "Tercero" },
 ];
 
 const serviciosOptions = [
@@ -74,6 +74,48 @@ const serviciosOptions = [
   { name: "INTERNET", value: "INTERNET" },
   { name: "MOVIL", value: "MOVIL" },
 ];
+
+// Simulación de datos de terceros (reemplazar con tu lógica real)
+const datosTerceros = [
+  { id: 1, nombre: 'Ana Pérez', telefono: '3001112222' },
+  { id: 2, nombre: 'Carlos López', telefono: '3103334444' },
+  { id: 3, nombre: 'Sofía Gómez', telefono: '3205556666' },
+];
+
+const validarTelefono = (telefono) => {
+  if (!/^\d+$/.test(telefono)) {
+    return "El teléfono debe contener solo números.";
+  }
+  if (telefono.length > 10) {
+    return "El teléfono no debe tener más de 10 dígitos.";
+  }
+  return null;
+};
+
+const validarTelefonosNoIguales = (tel1, tel2) => {
+  if (tel1 && tel2 && tel1 === tel2) {
+    return "El teléfono de contacto 1 no puede ser igual al teléfono de contacto 2.";
+  }
+  return null;
+};
+
+const validarUltimosCuatroDigitos = (tel1, tel2) => {
+  if (tel1 && tel2 && tel1.length >= 4 && tel2.length >= 4) {
+    const ultimosCuatroTel1 = tel1.slice(-4);
+    const ultimosCuatroTel2 = tel2.slice(-4);
+    if (ultimosCuatroTel1 === ultimosCuatroTel2) {
+      return "Los últimos cuatro dígitos del teléfono de contacto 1 y 2 no pueden ser iguales.";
+    }
+  }
+  return null;
+};
+
+const validarEstrato = (estrato) => {
+  if (estrato && (!/^[1-6]$/.test(estrato) || isNaN(parseInt(estrato)))) {
+    return "El estrato debe ser un número entre 1 y 6.";
+  }
+  return null;
+};
 
 export default function CrearVenta() {
   const { idVenta } = useParams();
@@ -124,6 +166,8 @@ export default function CrearVenta() {
     renta_mensual: "",
     todo_claro: "",
     persona_recibe_instalacion: "",
+    nombre_tercero: "", // Nuevo estado para el nombre del tercero
+    telefono_tercero: "", // Nuevo estado para el teléfono del tercero
     fecha_instalacion: "",
     franja_instalacion: "",
     observacion: "",
@@ -135,6 +179,10 @@ export default function CrearVenta() {
     link_autorizacion: "",
     servicios_adicionales: [],
   });
+  const [mostrarTerceroCampos, setMostrarTerceroCampos] = useState(false);
+  const [opcionesNombreTercero, setOpcionesNombreTercero] = useState([]);
+  const [opcionesTelefonoTercero, setOpcionesTelefonoTercero] = useState([]);
+  const [errores, setErrores] = useState({});
 
   useEffect(() => {
     try {
@@ -144,6 +192,21 @@ export default function CrearVenta() {
       console.error("Error al obtener o parsear el usuario de localStorage:", error);
       setUser(null);
     }
+
+    // Formatear datos de terceros para los selects
+    const nombresOptions = datosTerceros.map(tercero => ({
+      value: tercero.nombre,
+      label: tercero.nombre,
+      telefono: tercero.telefono,
+    }));
+    const telefonosOptions = datosTerceros.map(tercero => ({
+      value: tercero.telefono,
+      label: tercero.telefono,
+      nombre: tercero.nombre,
+    }));
+    setOpcionesNombreTercero(nombresOptions);
+    setOpcionesTelefonoTercero(telefonosOptions);
+
   }, []);
 
   const handleInputChange = (e) => {
@@ -165,7 +228,19 @@ export default function CrearVenta() {
       }
     } else if (name === "departamento") {
       setFormData((prevData) => ({ ...prevData, [name]: value, ciudad: "" }));
-    } else {
+    } else if (name === "persona_recibe_instalacion") {
+      setFormData((prevData) => ({ ...prevData, [name]: value, nombre_tercero: '', telefono_tercero: '' }));
+      setMostrarTerceroCampos(value === "Tercero");
+    } else if (name === "nombre_tercero") {
+      const terceroSeleccionado = opcionesNombreTercero.find(option => option.value === value);
+      setFormData(prevData => ({ ...prevData, [name]: value, telefono_tercero: terceroSeleccionado?.telefono || '' }));
+    } else if (name === "telefono_tercero") {
+      const terceroSeleccionado = opcionesTelefonoTercero.find(option => option.value === value);
+      setFormData(prevData => ({ ...prevData, [name]: value, nombre_tercero: terceroSeleccionado?.nombre || '' }));
+    } else if (name === "estrato") {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
+     else {
       setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
   };
@@ -187,6 +262,52 @@ export default function CrearVenta() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let valid = true;
+    const nuevosErrores = {};
+
+    // Validaciones de teléfonos
+    const telefono1Error = validarTelefono(formData.telefono_1);
+    if (telefono1Error) {
+      nuevosErrores.telefono_1 = telefono1Error;
+      valid = false;
+    }
+    const telefono2Error = validarTelefono(formData.telefono_2);
+    if (telefono2Error) {
+      nuevosErrores.telefono_2 = telefono2Error;
+      valid = false;
+    }
+    const telefonoGrabacionError = validarTelefono(formData.telefono_grabacion_contrato);
+    if (telefonoGrabacionError) {
+      nuevosErrores.telefono_grabacion_contrato = telefonoGrabacionError;
+      valid = false;
+    }
+
+    const telefonosNoIgualesError = validarTelefonosNoIguales(formData.telefono_1, formData.telefono_2);
+    if (telefonosNoIgualesError) {
+      nuevosErrores.telefono_2 = telefonosNoIgualesError;
+      valid = false;
+    }
+
+    const ultimosCuatroDigitosError = validarUltimosCuatroDigitos(formData.telefono_1, formData.telefono_2);
+    if (ultimosCuatroDigitosError) {
+      nuevosErrores.telefono_2 = ultimosCuatroDigitosError;
+      valid = false;
+    }
+
+    // Validación de estrato
+    const estratoError = validarEstrato(formData.estrato);
+    if (estratoError) {
+      nuevosErrores.estrato = estratoError;
+      valid = false;
+    }
+
+    setErrores(nuevosErrores);
+
+    if (!valid) {
+      alert("Por favor, corrige los errores en el formulario.");
+      return;
+    }
+
     const formDataToSend = new FormData(e.target);
 
     // Append asesor information
@@ -195,6 +316,15 @@ export default function CrearVenta() {
 
     // Append servicios adicionales as JSON string
     formDataToSend.append("servicios_adicionales", JSON.stringify(serviciosSeleccionados));
+
+    // Append información de tercero si se seleccionó
+    if (formData.persona_recibe_instalacion === "Tercero") {
+      formDataToSend.append("persona_recibe_instalacion", `Tercero: ${formData.nombre_tercero} ${formData.telefono_tercero}`);
+    } else {
+      formDataToSend.append("persona_recibe_instalacion", formData.persona_recibe_instalacion);
+    }
+    formDataToSend.append("nombre_tercero", formData.nombre_tercero); // Asegúrate de enviar también estos campos
+    formDataToSend.append("telefono_tercero", formData.telefono_tercero);
 
     // Append other form data from the state
     for (const key in formData) {
@@ -207,7 +337,7 @@ export default function CrearVenta() {
         } else if (key === "deco_adicional" && value === "NO") {
           formDataToSend.append(key, value);
           formDataToSend.append("cantidad_decos", "1"); // Ensure cantidad_decos is 1 if deco_adicional is NO
-        } else if (key !== "deco_adicional") {
+        } else if (key !== "deco_adicional" && key !== "nombre_tercero" && key !== "telefono_tercero") { // Excluir nombre_tercero y telefono_tercero del loop normal
           formDataToSend.append(key, value);
         }
       }
@@ -319,6 +449,7 @@ export default function CrearVenta() {
                   required
                   value={formData.telefono_1}
                   onChange={handleInputChange}
+                  error={errores.telefono_1}
                 />
                 <Input
                   label="Teléfono de contacto 2"
@@ -327,6 +458,7 @@ export default function CrearVenta() {
                   maxLength={10}
                   value={formData.telefono_2}
                   onChange={handleInputChange}
+                  error={errores.telefono_2}
                 />
                 <Input
                   label="Teléfono grabación de contrato"
@@ -336,6 +468,7 @@ export default function CrearVenta() {
                   required
                   value={formData.telefono_grabacion_contrato}
                   onChange={handleInputChange}
+                  error={errores.telefono_grabacion_contrato}
                 />
               </div>
             </details>
@@ -388,34 +521,37 @@ export default function CrearVenta() {
                 <Input
                   label="Comunidad"
                   name="comunidad"
-                  required
                   value={formData.comunidad}
                   onChange={handleInputChange}
                 />
                 <Input
                   label="Nodo"
                   name="nodo"
-                  required
                   value={formData.nodo}
                   onChange={handleInputChange}
                 />
                 <Input
                   label="Estrato"
                   name="estrato"
-                  type="number"
-                  min={0}
+                  type="text"
+                  maxLength={1}
                   required
                   value={formData.estrato}
                   onChange={handleInputChange}
+                  error={errores.estrato}
                 />
               </div>
             </details>
+          </div>
+        </div>
 
+        <div className="row">
+          <div className="col-lg-6">
             <details open className="form-section">
-              <summary>Datos de Venta</summary>
+              <summary>Detalles de la Venta</summary>
               <div className="section-content">
                 <Select
-                  label="Venta"
+                  label="Tipo de Venta"
                   name="venta"
                   options={opcionesVenta}
                   required
@@ -440,32 +576,23 @@ export default function CrearVenta() {
                 />
 
                 {maxServicios > 0 && (
-                  <div className="form-group">
-                    <label className="form-label-separated">Servicios Adicionales</label>
-                    <div>
-                      {serviciosOptions.map((servicio) => (
-                        <Checkbox
-                          key={servicio.value}
-                          label={servicio.name}
-                          name="servicios_adicionales"
-                          value={servicio.value}
-                          checked={serviciosSeleccionados.includes(servicio.value)}
-                          onChange={handleServicioCheckboxChange}
-                        />
-                      ))}
-                    </div>
-                    {serviciosSeleccionados.length > maxServicios && (
-                      <p className="text-danger">
-                        Solo puedes seleccionar {maxServicios} servicios.
-                      </p>
-                    )}
-                    {maxServicios > 0 && serviciosSeleccionados.length < maxServicios && (
-                      <p className="text-warning">
-                        Debes seleccionar {maxServicios} servicios.
-                      </p>
-                    )}
+                  <div className="mb-3">
+                    <label className="form-label">Servicios Adicionales ({serviciosSeleccionados.length}/{maxServicios})</label>
+                    {serviciosOptions.map((servicio) => (
+                      <Checkbox
+                        key={servicio.value}
+                        id={`servicio-${servicio.value}`}
+                        name="servicios_adicionales"
+                        value={servicio.value}
+                        label={servicio.name}
+                        checked={serviciosSeleccionados.includes(servicio.value)}
+                        onChange={handleServicioCheckboxChange}
+                        disabled={serviciosSeleccionados.length >= maxServicios && !serviciosSeleccionados.includes(servicio.value)}
+                      />
+                    ))}
                   </div>
                 )}
+
                 <Select
                   label="Deco Adicional"
                   name="deco_adicional"
@@ -476,9 +603,10 @@ export default function CrearVenta() {
                 />
                 {mostrarCantidadDecos && (
                   <Select
-                    label="Cantidad Decos"
+                    label="Cantidad de Decos"
                     name="cantidad_decos"
                     options={opcionesCantidadDecos}
+                    required
                     value={formData.cantidad_decos}
                     onChange={handleInputChange}
                   />
@@ -486,11 +614,9 @@ export default function CrearVenta() {
                 <Input
                   label="Campaña"
                   name="campana"
-                  required
                   value={formData.campana}
                   onChange={handleInputChange}
                 />
-
                 <Select
                   label="Adicionales"
                   name="adicionales"
@@ -501,53 +627,90 @@ export default function CrearVenta() {
                 <Input
                   label="Código Tarifa"
                   name="codigo_tarifa"
-                  required
                   value={formData.codigo_tarifa}
                   onChange={handleInputChange}
                 />
                 <Input
-                  label="Ptar"
+                  label="PTAR"
                   name="ptar"
-                  required
                   value={formData.ptar}
                   onChange={handleInputChange}
                 />
                 <Input
                   label="Nombre Paquete Adquirido"
                   name="nombre_paquete_adquirido"
-                  required
                   value={formData.nombre_paquete_adquirido}
                   onChange={handleInputChange}
                 />
                 <Input
                   label="Renta Mensual"
                   name="renta_mensual"
-                  type="number"
-                  min={0}
-                  required
-                  value={formData.renta_mensual}
-                  onChange={handleInputChange}
+                  type="text"
+                  value={
+                    formData.renta_mensual
+                      ? `$${Number(formData.renta_mensual).toLocaleString("es-CO")}`
+                      : ""
+                  }
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/\D/g, "");
+                    if (raw.length <= 7) {
+                      handleInputChange({
+                        target: {
+                          name: "renta_mensual",
+                          value: raw,
+                        },
+                      });
+                    }
+                  }}
+                  placeholder="$"
                 />
-                <Select
+
+                <Input
                   label="Todo Claro"
                   name="todo_claro"
-                  options={[
-                    { value: "SI", label: "SI" },
-                    { value: "NO", label: "NO" },
-                  ]}
-                  required
                   value={formData.todo_claro}
                   onChange={handleInputChange}
                 />
-                <Input
-                  label="Persona recibe instalación"
+              </div>
+            </details>
+          </div>
+
+          <div className="col-lg-6">
+            <details open className="form-section">
+              <summary>Información de Instalación</summary>
+              <div className="section-content">
+                <Select
+                  label="¿Quién recibe la instalación?"
                   name="persona_recibe_instalacion"
+                  options={opcionesTercerosInicial}
                   required
                   value={formData.persona_recibe_instalacion}
                   onChange={handleInputChange}
                 />
+
+                {mostrarTerceroCampos && (
+                  <>
+                    <Input
+                      label="Nombre del Tercero"
+                      name="nombre_tercero"
+                      type="text"
+                      value={formData.nombre_tercero}
+                      onChange={handleInputChange}
+                    />
+                    <Input
+                      label="Teléfono del Tercero"
+                      name="telefono_tercero"
+                      type="text"
+                      maxLength={10}
+                      value={formData.telefono_tercero}
+                      onChange={handleInputChange}
+                      error={errores.telefono_tercero}
+                    />
+                  </>
+                )}
+
                 <Input
-                  label="Fecha instalación"
+                  label="Fecha de Instalación"
                   name="fecha_instalacion"
                   type="date"
                   min={hoy}
@@ -556,48 +719,49 @@ export default function CrearVenta() {
                   onChange={handleInputChange}
                 />
                 <Input
-                  label="Franja instalación"
+                  label="Franja de Instalación"
                   name="franja_instalacion"
-                  required
                   value={formData.franja_instalacion}
                   onChange={handleInputChange}
                 />
                 <Textarea
-                  label="Observación"
+                  label="Observaciones"
                   name="observacion"
+                  rows="3"
                   value={formData.observacion}
                   onChange={handleInputChange}
                 />
-                <Input
-                  label="Detalles"
+                <Textarea
+                  label="Detalles Adicionales"
                   name="detalles"
+                  rows="3"
                   value={formData.detalles}
                   onChange={handleInputChange}
                 />
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-lg-12">
+            <details open className="form-section">
+              <summary>Documentos Adjuntos</summary>
+              <div className="section-content">
                 <FileInput
-                  label="Validación de Identidad"
+                  label="Imagen"
                   name="link"
-                  required
                   onChange={handleFileChange}
                 />
                 <FileInput
-                  label="Validación de Créditos"
+                  label="Imagen "
                   name="link2"
-                  required
                   onChange={handleFileChange}
                 />
                 <FileInput
-                  label="Motivo no venta digital"
+                  label="Imagen"
                   name="link3"
                   onChange={handleFileChange}
-                />
-                <Input
-                  label="Autorización de Datos (URL)"
-                  name="link_autorizacion"
-                  type="url"
-                  required
-                  value={formData.link_autorizacion}
-                  onChange={handleInputChange}
                 />
               </div>
             </details>

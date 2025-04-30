@@ -1,0 +1,47 @@
+/* VentasAsesorTabla.css */
+
+.pagination-container {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+  }
+  
+  .pagination-item {
+    margin-right: 0.5rem;
+  }
+  
+  .pagination-item:last-child {
+    margin-right: 0;
+  }
+  
+  .pagination-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .pagination-link:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .pagination-active .pagination-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+  
+  .pagination-disabled .pagination-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+  }
+  
+  .pagination-break .pagination-link {
+    border: none;
+    padding: 0.5rem;
+  }

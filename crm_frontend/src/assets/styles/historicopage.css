@@ -106,4 +106,40 @@ main {
     outline: none;
     box-shadow: 0 0 6px rgba(0,123,255,0.3);
   }
-  
+  /* Estilos generales para la celda de estado (opcional) */
+table tbody td[data-title="Estado"] {
+  padding: 8px; /* Reduce el padding si lo deseas */
+  text-align: center; /* Centra el texto del estado */
+}
+
+/* Estilos para el span dentro de la celda de estado */
+table tbody td[data-title="Estado"] span.estado-celda {
+  display: inline-block; /* Permite aplicar width y height si es necesario */
+  padding: 4px 8px; /* Ajusta el padding dentro del "cuadrito" */
+  border-radius: 6px; /* O el radio que prefieras para el "cuadrito" */
+  font-size: 0.9rem; /* Ajusta el tamaño de la fuente si es necesario */
+  color: #fff; /* Color del texto dentro del "cuadrito" */
+}
+
+/* Clases de color específicas */
+.table-warning {
+  background-color: #ffc107; /* Amarillo */
+}
+
+.table-info {
+  background-color: #17a2b8; /* Cian */
+}
+
+.table-danger {
+  background-color: #dc3545; /* Rojo */
+}
+
+.table-success {
+  background-color: #28a745; /* Verde */
+}
+
+/* Si tienes un estado por defecto sin clase, puedes añadir un estilo base */
+table tbody td[data-title="Estado"] span.estado-celda:not([class*="table-"]) {
+  background-color: #f8f9fa; /* Gris claro por defecto */
+  color: #495057;
+}

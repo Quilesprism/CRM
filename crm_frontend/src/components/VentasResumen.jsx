@@ -11,8 +11,8 @@ const VentasResumen = ({ datos }) => {
       </thead>
       <tbody>
         <tr>
-          <td>{datos.ventas_digitales}</td>
-          <td>{datos.ventas_grabadas}</td>
+          <td>{datos.ventas}</td>
+          <td>{datos.ventas}</td>
         </tr>
       </tbody>
     </table>

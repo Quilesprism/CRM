@@ -103,7 +103,6 @@ h1.form-title {
   transform: scale(0.98);
 }
 
-/* Cards (sin cambios específicos solicitados, se mantienen los estilos previos) */
 .card-container {
   border: 1px solid #ddd;
   border-radius: 10px;

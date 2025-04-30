@@ -24,7 +24,6 @@ export default function LoginPage() {
         nuevo: data.nuevo,
       }));      
 
-      alert("Login exitoso");
       navigate("/"); 
     } catch (error) {
       console.error(error);

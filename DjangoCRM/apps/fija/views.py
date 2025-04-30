@@ -2,8 +2,10 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 from .models import Historico_Fija, Venta_fija
-from ..user.models import Permiso
+from ..user.models import Permiso, CustomUser
+from rest_framework.decorators import action
 from .serializers import FijaSerializer, FijaSerializerCreate
 from .usecases.validations.permissions import CanCreateReadPermission, CanEditDeletePermission, SupervisorPermission
 
@@ -16,7 +18,7 @@ class FijaViewSet(viewsets.ModelViewSet):
     serializer_class = FijaSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'create']:
+        if self.action in ['list', 'retrieve']:
             perms = [IsAuthenticated, CanCreateReadPermission]
         elif self.action in ['update', 'partial_update', 'destroy']:
             perms = [IsAuthenticated, CanEditDeletePermission]
@@ -33,7 +35,7 @@ class FijaViewSetCreate(viewsets.ModelViewSet):
     serializer_class = FijaSerializerCreate
 
     def get_permissions(self):
-        if self.action in ['create', 'list', 'retrieve']:
+        if self.action in ['create', 'list', 'retrieve', 'asesor_ventas']:
             perms = [IsAuthenticated, CanCreateReadPermission]
         elif self.action in ['update', 'partial_update', 'destroy']:
             perms = [IsAuthenticated, CanEditDeletePermission]
@@ -63,3 +65,25 @@ class FijaViewSetCreate(viewsets.ModelViewSet):
         """
         response = super().create(request, *args, **kwargs)
         return Response(response.data, status=status.HTTP_201_CREATED)
+    @action(detail=False, methods=['get'], url_path='asesor')
+    def asesor_ventas(self, request):
+        """
+        Obtiene todas las ventas asociadas al asesor logueado.
+        """
+        asesor_cedula = request.GET.get('asesor') # Cambia el nombre de la variable para claridad
+        if asesor_cedula:
+            ventas = Venta_fija.objects.filter(cedula_asesor=asesor_cedula) # Filtra por cedula_asesor
+            serializer = self.get_serializer(ventas, many=True)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "Se requiere la cédula del asesor."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def retrieve(self, request, pk=None):
+        """
+        Override retrieve para obtener una venta específica.
+        """
+        queryset = Venta_fija.objects.all()
+        venta = get_object_or_404(queryset, pk=pk)
+        serializer = self.get_serializer(venta)
+        return Response(serializer.data)

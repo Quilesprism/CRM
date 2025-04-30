@@ -59,6 +59,7 @@ MIDDLEWARE = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://1cc3rjkx-5173.use2.devtunnels.ms"
     
 ]
 
