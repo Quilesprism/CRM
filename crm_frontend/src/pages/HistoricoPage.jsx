@@ -14,6 +14,7 @@ function HistoricoPage() {
     const fetchVentas = async () => {
       try {
         const data = await getVentasTotales();
+        console.log(data);
         setVentas(data);
       } catch (error) {
         console.error("Error cargando ventas:", error);
@@ -87,7 +88,7 @@ function HistoricoPage() {
           </thead>
           <tbody>
             {ventasPaginadas.map((venta) => (
-              <tr key={venta.id}>
+              <tr key={venta.id_venta}>
                 <td data-title="Fecha">{venta.fecha_grabacion_contrato}</td>
                 <td data-title="Asesor">{venta.nombre_asesor}</td>
                 <td data-title="Cliente">{venta.nombres_apellidos_cliente}</td>
@@ -96,8 +97,8 @@ function HistoricoPage() {
                 <td data-title="Estado">{venta.estado}</td>
                 <td data-title="Contrato">{venta.tipo_contrato}</td>
                 <td className="select">
-                  <button className="button" onClick={() => handleVerVenta(venta.id)}>Ver</button>
-                  <button className="button" onClick={() => handleExport(venta.id)}>Exportar</button>
+                  <button className="button" onClick={() => handleVerVenta(venta.id_venta)}>Ver</button>
+                  <button className="button" onClick={() => handleExport(venta.id_venta)}>Exportar</button>
                 </td>
               </tr>
             ))}

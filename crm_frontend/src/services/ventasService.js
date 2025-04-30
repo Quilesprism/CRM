@@ -12,7 +12,7 @@ const getAuthHeaders = () => ({
 
 export const getVentasTotales = async () => {
   const res = await axios.get(`${API_URL}/venta_fija/`, getAuthHeaders());
-  console.log(res.data);
+
   return res.data;
 };
 
@@ -28,3 +28,4 @@ export const exportVentaExcel = async (idVenta) => {
   const file = new Blob([excelBuffer], { type: "application/octet-stream" });
   saveAs(file, `Venta_${idVenta}.xlsx`);
 };
+
