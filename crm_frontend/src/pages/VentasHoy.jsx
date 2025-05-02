@@ -3,31 +3,7 @@ import { getVentasTotales, exportVentaExcel } from "../services/ventasService";
 import { useNavigate } from "react-router-dom";
 import "../assets/styles/historicopage.css";
 
-// Función para aplicar color según el estado
-const obtenerColorEstado = (estado) => {
-  switch (estado) {
-    case "CANTADA":
-    case "AUDITADA":
-    case "ENVIADA AL ABD":
-    case "DIGITAL":
-      return "table-warning";
-    case "PENDIENTE":
-    case "RECUPERADA":
-      return "table-info";
-    case "RECHAZADA":
-    case "DEVUELTA ABD":
-    case "DESACTIVA":
-      return "table-danger";
-    case "ACTIVA":
-    case "LEGALIZADA":
-    case "EXITOSA":
-      return "table-success";
-    default:
-      return "";
-  }
-};
-
-function HistoricoPage() {
+function VentasHoy() {
   const [ventas, setVentas] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(1);
@@ -38,7 +14,14 @@ function HistoricoPage() {
     const fetchVentas = async () => {
       try {
         const data = await getVentasTotales();
-        setVentas(data);
+
+        const hoy = new Date().toISOString().split("T")[0]; 
+        const ventasHoy = data.filter((venta) => {
+          const fechaVenta = venta.fecha_grabacion_contrato?.split("T")[0];
+          return fechaVenta === hoy;
+        });
+
+        setVentas(ventasHoy);
       } catch (error) {
         console.error("Error cargando ventas:", error);
         navigate("/login");
@@ -53,7 +36,7 @@ function HistoricoPage() {
   };
 
   const handleVerVenta = (idVenta) => {
-    navigate(`/editar-venta/${idVenta}`); 
+    navigate(`/ver-venta/${idVenta}`);
   };
 
   const handleBusqueda = (e) => {
@@ -67,22 +50,12 @@ function HistoricoPage() {
     const cedula = venta.cedula_cliente?.toString() || "";
     const telefono = venta.telefono_grabacion_contrato?.toString() || "";
     return (
-      asesor.includes(busqueda) ||
+        asesor.includes(busqueda) ||
       nombre.includes(busqueda) ||
       cedula.includes(busqueda) ||
       telefono.includes(busqueda)
     );
   });
-
-  const contadorContratos = ventasFiltradas.reduce(
-    (acc, venta) => {
-      const tipo = venta.venta?.toLowerCase();
-      if (tipo === "grabada") acc.grabada += 1;
-      else if (tipo === "digital") acc.digital += 1;
-      return acc;
-    },
-    { grabada: 0, digital: 0 }
-  );
 
   const totalPaginas = Math.ceil(ventasFiltradas.length / ITEMS_POR_PAGINA);
   const ventasPaginadas = ventasFiltradas.slice(
@@ -93,7 +66,7 @@ function HistoricoPage() {
   return (
     <div className="historico-container">
       <div className="buscador-container">
-        <h1>Ventas Totales</h1>
+        <h1>Ventas de Hoy</h1>
         <input
           type="text"
           placeholder="Buscar por nombre asesor, nombre, cédula o teléfono"
@@ -101,11 +74,8 @@ function HistoricoPage() {
           onChange={handleBusqueda}
           className="buscador"
         />
-        <div style={{ marginTop: "10px", fontWeight: "bold" }}>
-          <span>Grabadas: {contadorContratos.grabada}</span> |{" "}
-          <span>Digitales: {contadorContratos.digital}</span>
-        </div>
       </div>
+      <p>(Haz clic en "Ver" para más detalles)</p>
 
       <main>
         <table>
@@ -129,12 +99,8 @@ function HistoricoPage() {
                 <td data-title="Cliente">{venta.nombres_apellidos_cliente}</td>
                 <td data-title="Cédula">{venta.cedula_cliente}</td>
                 <td data-title="MIN">{venta.telefono_grabacion_contrato}</td>
-                <td data-title="Estado">
-                  <span className={`estado-celda ${obtenerColorEstado(venta.estado)}`}>
-                    {venta.estado}
-                  </span>
-                </td>
-                <td data-title="Contrato">{venta.venta}</td>
+                <td data-title="Estado">{venta.estado}</td>
+                <td data-title="Contrato">{venta.tipo_contrato}</td>
                 <td className="select">
                   <button className="button" onClick={() => handleVerVenta(venta.id_venta)}>Ver</button>
                   <button className="button" onClick={() => handleExport(venta.id_venta)}>Exportar</button>
@@ -143,9 +109,7 @@ function HistoricoPage() {
             ))}
             {ventasPaginadas.length === 0 && (
               <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  No se encontraron resultados.
-                </td>
+                <td colSpan="8" style={{ textAlign: "center" }}>No se encontraron ventas hoy.</td>
               </tr>
             )}
           </tbody>
@@ -164,10 +128,7 @@ function HistoricoPage() {
               {i + 1}
             </button>
           ))}
-          <button
-            onClick={() => setPagina(p => Math.min(p + 1, totalPaginas))}
-            disabled={pagina === totalPaginas}
-          >
+          <button onClick={() => setPagina(p => Math.min(p + 1, totalPaginas))} disabled={pagina === totalPaginas}>
             Siguiente
           </button>
         </div>
@@ -176,4 +137,4 @@ function HistoricoPage() {
   );
 }
 
-export default HistoricoPage;
+export default VentasHoy;

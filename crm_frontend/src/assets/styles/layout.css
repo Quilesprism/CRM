@@ -10,7 +10,7 @@
 }
 
 body {
-  background: #eaeef6;
+  background: #f6eaea;
   font-family: 'Open Sans', sans-serif;
   margin: 0;
 }
@@ -21,8 +21,8 @@ body {
 
 .navbar {
   position: fixed;
-  top: var(--spacer);
-  left: var(--spacer);
+  top: 0;
+  left: 0;
   background: #fff;
   border-radius: var(--border-radius);
   padding: var(--spacer) 0;

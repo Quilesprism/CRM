@@ -104,11 +104,11 @@ function VerVenta() {
             <img
               src={ventaData.link}
               alt="Validación de Identidad"
-              className="img-fluid" // Añade clases para hacerlo responsivo si es necesario
+              className="img-fluid" 
               style={{ maxWidth: '300px', maxHeight: '300px', display: 'block' }}
               onError={(e) => {
-                e.target.onerror = null; // Evita bucles infinitos de error
-                e.target.src = "https://via.placeholder.com/150?text=Imagen+No+Disponible"; // Muestra una imagen de reemplazo
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/150?text=Imagen+No+Disponible";
               }}
             />
             

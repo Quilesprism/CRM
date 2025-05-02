@@ -13,3 +13,8 @@ class FijaSerializerCreate(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('id_venta',)
       
+class FijaSerializerUpdate(serializers.ModelSerializer):
+    class Meta:
+        model = Venta_fija
+        fields = '__all__'
+        read_only_fields = ['fecha_registro', 'ultima_modificacion', 'cedula_asesor'] 

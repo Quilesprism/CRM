@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import Historico_Fija, Venta_fija
 from ..user.models import Permiso, CustomUser
 from rest_framework.decorators import action
-from .serializers import FijaSerializer, FijaSerializerCreate
+from .serializers import FijaSerializer, FijaSerializerCreate, FijaSerializerUpdate
 from .usecases.validations.permissions import CanCreateReadPermission, CanEditDeletePermission, SupervisorPermission
 
 class FijaViewSet(viewsets.ModelViewSet):
@@ -65,14 +65,15 @@ class FijaViewSetCreate(viewsets.ModelViewSet):
         """
         response = super().create(request, *args, **kwargs)
         return Response(response.data, status=status.HTTP_201_CREATED)
+
     @action(detail=False, methods=['get'], url_path='asesor')
     def asesor_ventas(self, request):
         """
         Obtiene todas las ventas asociadas al asesor logueado.
         """
-        asesor_cedula = request.GET.get('asesor') # Cambia el nombre de la variable para claridad
+        asesor_cedula = request.GET.get('asesor')
         if asesor_cedula:
-            ventas = Venta_fija.objects.filter(cedula_asesor=asesor_cedula) # Filtra por cedula_asesor
+            ventas = Venta_fija.objects.filter(cedula_asesor=asesor_cedula)
             serializer = self.get_serializer(ventas, many=True)
             return Response(serializer.data)
         else:
@@ -87,3 +88,26 @@ class FijaViewSetCreate(viewsets.ModelViewSet):
         venta = get_object_or_404(queryset, pk=pk)
         serializer = self.get_serializer(venta)
         return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        """
+        Override update para actualizar una venta específica.
+        """
+        queryset = Venta_fija.objects.all()
+        venta = get_object_or_404(queryset, pk=pk)
+        serializer = FijaSerializerUpdate(venta, data=request.data, partial=True) # Usamos un serializer diferente para la actualización
+        if serializer.is_valid():
+            serializer.save()
+            # Opcional: Actualizar también el histórico si es necesario
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        """
+        Override destroy para eliminar una venta específica.
+        """
+        queryset = Venta_fija.objects.all()
+        venta = get_object_or_404(queryset, pk=pk)
+        venta.delete()
+        # Opcional: También podrías marcar el registro en el histórico como inactivo
+        return Response(status=status.HTTP_204_NO_CONTENT)

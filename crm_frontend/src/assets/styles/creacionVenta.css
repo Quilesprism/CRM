@@ -5,7 +5,15 @@
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
+.form-text {
+  font-size: 0.875em;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
 
+.form-text.text-danger {
+  color: #dc3545 !important;
+}
 h1.form-title {
   font-size: 1.8rem;
   font-weight: bold;

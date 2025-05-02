@@ -6,16 +6,16 @@ import "../assets/styles/layout.css";
 function Layout() {
   const navigate = useNavigate();
   
-  // Obtener id del asesor logueado (esto depende de tu implementación)
-  const asesorId = localStorage.getItem("asesorId"); // Asumiendo que guardas el id del asesor en localStorage
+
+  const asesorId = localStorage.getItem("asesorId"); 
 
   useEffect(() => {
     feather.replace();
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // o sessionStorage si usas sessionStorage
-    localStorage.removeItem("asesorId"); // Limpiar también el id del asesor
+    localStorage.removeItem("token"); 
+    localStorage.removeItem("asesorId"); 
     navigate("/login"); 
   };
 
@@ -23,11 +23,24 @@ function Layout() {
     <div className="layout-wrapper">
       <nav className="navbar">
         <ul className="navbar__menu">
-          <li className="navbar__item">
-            <Link to="/ventas" className="navbar__link">
-              <i data-feather="shopping-cart"></i><span>Ventas</span>
+        <li className="navbar__item">
+            <Link to="/ventas-hoy" className="navbar__link">
+              <i data-feather="archive"></i><span>ventas hoy</span>
             </Link>
           </li>
+          <li className="navbar__item">
+            <Link to="/ventas" className="navbar__link">
+              <i data-feather="folder"></i><span>Historico de ventas</span>
+            </Link>
+          </li>
+          <li className="navbar__item">
+            <Link to="/asesores" className="navbar__link">
+              <i data-feather="user"></i><span>Asesores Fija</span>
+            </Link>
+          </li>
+
+
+         
           <li className="navbar__item">
             <Link to="/crear-venta" className="navbar__link">
               <i data-feather="plus-circle"></i><span>Crear Venta</span>
@@ -35,9 +48,9 @@ function Layout() {
           </li>
           <li className="navbar__item">
             <Link to={`/ver-ventas-asesor`} className="navbar__link">
-              <i data-feather="file-text"></i><span>Ver Ventas</span>
+              <i data-feather="file-text"></i><span>Ver mis ventas</span>
             </Link>
-          </li>
+          </li> 
           <li className="navbar__item">
             <button onClick={handleLogout} className="navbar__link logout-button">
               <i data-feather="log-out"></i><span>Salir</span>

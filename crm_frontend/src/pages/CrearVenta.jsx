@@ -1,4 +1,3 @@
-// src/views/CrearVenta.js
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { crearVentaFija } from "../api/fijaApi";
@@ -9,6 +8,9 @@ import FileInput from "../components/forms/FileInput";
 import Checkbox from "../components/forms/Checkbox";
 import useFetchDepartamentosCiudades from "../hooks/useFetchDepartamentosCiudades";
 import "../assets/styles/creacionVenta.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import holidaysColombia from "festivos-colombianos";
 
 const opcionesTipoDocumento = [
   { value: "CC", label: "CC" },
@@ -72,15 +74,12 @@ const opcionesTercerosInicial = [
 const serviciosOptions = [
   { name: "TV", value: "TV" },
   { name: "INTERNET", value: "INTERNET" },
-  { name: "MOVIL", value: "MOVIL" },
+  { name: "TELEFONÍA", value: "TELEFONIA" },
 ];
-
-// Simulación de datos de terceros (reemplazar con tu lógica real)
-const datosTerceros = [
-  { id: 1, nombre: 'Ana Pérez', telefono: '3001112222' },
-  { id: 2, nombre: 'Carlos López', telefono: '3103334444' },
-  { id: 3, nombre: 'Sofía Gómez', telefono: '3205556666' },
-];
+const opcionesFranjaInstalacion = [
+  {label:"AM", value:"AM"},
+  {label:"PM", value:"PM"},
+]
 
 const validarTelefono = (telefono) => {
   if (!/^\d+$/.test(telefono)) {
@@ -133,6 +132,9 @@ export default function CrearVenta() {
   const [mostrarCantidadDecos, setMostrarCantidadDecos] = useState(false);
   const [maxServicios, setMaxServicios] = useState(0);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
+  const [festivos, setFestivos] = useState([]);
+  const [confirmacionDireccionRr, setConfirmacionDireccionRr] = useState("");
+  const [direccionNoCoincide, setDireccionNoCoincide] = useState(false);
   const [formData, setFormData] = useState({
     id_venta: "",
     nombres_apellidos_cliente: "",
@@ -166,8 +168,8 @@ export default function CrearVenta() {
     renta_mensual: "",
     todo_claro: "",
     persona_recibe_instalacion: "",
-    nombre_tercero: "", // Nuevo estado para el nombre del tercero
-    telefono_tercero: "", // Nuevo estado para el teléfono del tercero
+    nombre_tercero: "", 
+    telefono_tercero: "", 
     fecha_instalacion: "",
     franja_instalacion: "",
     observacion: "",
@@ -193,21 +195,38 @@ export default function CrearVenta() {
       setUser(null);
     }
 
-    // Formatear datos de terceros para los selects
-    const nombresOptions = datosTerceros.map(tercero => ({
-      value: tercero.nombre,
-      label: tercero.nombre,
-      telefono: tercero.telefono,
-    }));
-    const telefonosOptions = datosTerceros.map(tercero => ({
-      value: tercero.telefono,
-      label: tercero.telefono,
-      nombre: tercero.nombre,
-    }));
-    setOpcionesNombreTercero(nombresOptions);
-    setOpcionesTelefonoTercero(telefonosOptions);
-
   }, []);
+  useEffect(() => {
+    const añoActual = new Date().getFullYear();
+    try {
+      const festivosColombia = holidaysColombia(añoActual);
+      const festivosFormateados = festivosColombia.map((fecha) => {
+        const dateObj = new Date(fecha.holiday);  
+        return {
+          date: dateObj.toISOString().split("T")[0],  
+          name: fecha.celebration,  
+        };
+      });
+      setFestivos(festivosFormateados);
+    } catch (error) {
+      console.error("Error al obtener festivos:", error);
+    }
+  }, []);
+  const esDiaDeshabilitado = (dateStr) => {
+    if (!dateStr) {
+      return false; 
+    }
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      return false; 
+    }
+    const dia = date.getDay(); 
+    const fechaStr = date.toISOString().split("T")[0];
+    return dia === 0 || festivos.some((f) => f.date === fechaStr);
+  };
+  const handleDateChange = (e) => {
+    setFormData({ ...formData, fecha_instalacion: e.target.value });
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -264,8 +283,8 @@ export default function CrearVenta() {
     e.preventDefault();
     let valid = true;
     const nuevosErrores = {};
-
-    // Validaciones de teléfonos
+  
+    // Validaciones de teléfonos (sin cambios)
     const telefono1Error = validarTelefono(formData.telefono_1);
     if (telefono1Error) {
       nuevosErrores.telefono_1 = telefono1Error;
@@ -281,43 +300,52 @@ export default function CrearVenta() {
       nuevosErrores.telefono_grabacion_contrato = telefonoGrabacionError;
       valid = false;
     }
-
+  
     const telefonosNoIgualesError = validarTelefonosNoIguales(formData.telefono_1, formData.telefono_2);
     if (telefonosNoIgualesError) {
       nuevosErrores.telefono_2 = telefonosNoIgualesError;
       valid = false;
     }
-
+  
     const ultimosCuatroDigitosError = validarUltimosCuatroDigitos(formData.telefono_1, formData.telefono_2);
     if (ultimosCuatroDigitosError) {
       nuevosErrores.telefono_2 = ultimosCuatroDigitosError;
       valid = false;
     }
-
-    // Validación de estrato
+  
+    // Validación de estrato (sin cambios)
     const estratoError = validarEstrato(formData.estrato);
     if (estratoError) {
       nuevosErrores.estrato = estratoError;
       valid = false;
     }
-
+  
+    // Validación de coincidencia de direcciones
+    if (formData.direccion_rr !== confirmacionDireccionRr) {
+      nuevosErrores.confirmacion_direccion_rr = "Las direcciones no coinciden.";
+      valid = false;
+      setDireccionNoCoincide(true); // Asegurarse de mostrar el mensaje de error
+    } else {
+      setDireccionNoCoincide(false); // Si coinciden, ocultar el mensaje de error
+    }
+  
     setErrores(nuevosErrores);
-
+  
     if (!valid) {
       alert("Por favor, corrige los errores en el formulario.");
       return;
     }
-
+  
     const formDataToSend = new FormData(e.target);
-
-    // Append asesor information
+  
+    // Append asesor information (sin cambios)
     formDataToSend.append("cedula_asesor", user?.cedula || "");
     formDataToSend.append("nombre_asesor", user?.nombres || "");
-
-    // Append servicios adicionales as JSON string
+  
+    // Append servicios adicionales as JSON string (sin cambios)
     formDataToSend.append("servicios_adicionales", JSON.stringify(serviciosSeleccionados));
-
-    // Append información de tercero si se seleccionó
+  
+    // Append información de tercero si se seleccionó (sin cambios)
     if (formData.persona_recibe_instalacion === "Tercero") {
       formDataToSend.append("persona_recibe_instalacion", `Tercero: ${formData.nombre_tercero} ${formData.telefono_tercero}`);
     } else {
@@ -325,10 +353,10 @@ export default function CrearVenta() {
     }
     formDataToSend.append("nombre_tercero", formData.nombre_tercero); // Asegúrate de enviar también estos campos
     formDataToSend.append("telefono_tercero", formData.telefono_tercero);
-
-    // Append other form data from the state
+  
+    // Append other form data from the state, EXCLUDING confirmacion_direccion_rr
     for (const key in formData) {
-      if (formData.hasOwnProperty(key)) {
+      if (formData.hasOwnProperty(key) && key !== "confirmacion_direccion_rr") {
         const value = formData[key];
         if (value instanceof File) {
           formDataToSend.append(key, value, value.name);
@@ -336,23 +364,22 @@ export default function CrearVenta() {
           formDataToSend.append(key, value === "SI");
         } else if (key === "deco_adicional" && value === "NO") {
           formDataToSend.append(key, value);
-          formDataToSend.append("cantidad_decos", "1"); // Ensure cantidad_decos is 1 if deco_adicional is NO
-        } else if (key !== "deco_adicional" && key !== "nombre_tercero" && key !== "telefono_tercero") { // Excluir nombre_tercero y telefono_tercero del loop normal
+          formDataToSend.append("cantidad_decos", "1");
+        } else if (key !== "deco_adicional" && key !== "nombre_tercero" && key !== "telefono_tercero") {
           formDataToSend.append(key, value);
         }
       }
     }
-
+  
     if (maxServicios > 0 && serviciosSeleccionados.length !== maxServicios) {
       alert(`Debes seleccionar ${maxServicios} servicios.`);
       return;
     }
-
+  
     try {
       const response = await crearVentaFija(formDataToSend);
       console.log("Venta creada:", response.data);
       alert("Venta creada exitosamente");
-      // Optionally reset the form or redirect
     } catch (error) {
       console.error("Error al crear la venta:", error.response?.data);
       alert(JSON.stringify(error.response?.data, null, 2));
@@ -378,7 +405,6 @@ export default function CrearVenta() {
         className="form-body"
       >
         <input type="hidden" name="tipo_solicitud" value="FIJA" />
-        {/* Asesor information will be appended in handleSubmit */}
 
         <div className="row">
           <div className="col-lg-6">
@@ -499,12 +525,25 @@ export default function CrearVenta() {
                   disabled={!selectedDepartamento}
                 />
                 <Input
-                  label="Direccion de residencia"
+                  label="Direccion de residencia (Tal como se encuentra en RR)"
                   name="direccion_rr"
                   required
                   value={formData.direccion_rr}
                   onChange={handleInputChange}
                 />
+                <Input
+                  label="Confirmar Dirección de Residencia"
+                  name="confirmacion_direccion_rr"
+                  required
+                  value={confirmacionDireccionRr}
+                  onChange={(e) => {
+                    setConfirmacionDireccionRr(e.target.value);
+                    setDireccionNoCoincide(e.target.value !== formData.direccion_rr);
+                  }}
+                />
+                {direccionNoCoincide && (
+                  <p className="form-text text-danger">Las direcciones no coinciden.</p>
+                )}
                 <Input
                   label="Nombre Conjunto"
                   name="nombre_conjunto"
@@ -708,22 +747,31 @@ export default function CrearVenta() {
                     />
                   </>
                 )}
-
-                <Input
-                  label="Fecha de Instalación"
-                  name="fecha_instalacion"
-                  type="date"
-                  min={hoy}
-                  required
-                  value={formData.fecha_instalacion}
-                  onChange={handleInputChange}
-                />
-                <Input
-                  label="Franja de Instalación"
-                  name="franja_instalacion"
-                  value={formData.franja_instalacion}
-                  onChange={handleInputChange}
-                />
+ <div className="mb-3">
+  <label htmlFor="fecha_instalacion" className="form-label-separated">Fecha de Instalación</label>
+  <DatePicker
+    id="fecha_instalacion"
+    name="fecha_instalacion"
+    selected={formData.fecha_instalacion ? new Date(formData.fecha_instalacion) : null}
+    onChange={(date) => setFormData({ ...formData, fecha_instalacion: date ? date.toISOString().split("T")[0] : "" })}
+    minDate={new Date()}
+    filterDate={(date) => {
+      const day = date.getDay();
+      const dateStr = date.toISOString().split("T")[0];
+      return day !== 0 && !festivos.some((f) => f.date === dateStr);
+    }}
+    dateFormat="yyyy-MM-dd"
+    className="form-control-separated"
+  />
+</div>
+                <Select
+            label="Franja de Instalación"
+            name="franja_instalacion"
+            options={opcionesFranjaInstalacion}
+            required
+            value={formData.franja_instalacion}
+            onChange={handleInputChange}
+          />
                 <Textarea
                   label="Observaciones"
                   name="observacion"

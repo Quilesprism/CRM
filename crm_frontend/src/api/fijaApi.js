@@ -1,4 +1,4 @@
-const API_URL = "https://1cc3rjkx-8000.use2.devtunnels.ms";
+const API_URL = "http://127.0.0.1:8000";
 import axios from "axios";
 
 function getToken() {
@@ -13,7 +13,7 @@ const getAuthHeaders = () => ({
 
 export async function fetchHistoricoFija() {
   try {
-    const response = await axios.get(`${API_URL}/api/historico_fija/`, getAuthHeaders());
+    const response = await axios.get(`${API_URL}/api/venta_fija/`, getAuthHeaders()); // Usamos la misma URL
     return response.data;
   } catch (error) {
     console.error("Error en fetchHistoricoFija:", error);
@@ -59,11 +59,25 @@ export const getVentaById = async (idVenta) => {
   }
 };
 
+export const updateVenta = async (idVenta, data) => {
+  try {
+    const response = await axios.put( // Usamos PUT para actualizar todos los campos
+      `${API_URL}/api/venta_fija/${idVenta}/`,
+      data,
+      getAuthHeaders()
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error al actualizar la venta con ID ${idVenta}:`, error);
+    throw error;
+  }
+};
+
 export const getVentasByAsesorId = async (asesorCedula) => { // Cambia el nombre del parámetro para claridad
   try {
     const response = await axios.get(`${API_URL}/api/venta_fija/asesor/`, {
       ...getAuthHeaders(),
-      params: { asesor: asesorCedula } 
+      params: { asesor: asesorCedula }
     });
     return response.data;
   } catch (error) {
