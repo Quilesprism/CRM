@@ -11,6 +11,7 @@ import VentasDeAsesor from './pages/VentasDeAsesor';
 import ListaAsesores from "./components/ListaAsesores";
 import './App.css'; // Importa el archivo CSS
 import EditarVenta from "./pages/EditarVentas";
+import GenerarReporteFecha from "./pages/GenerarReporteFecha";
 function App() {
   const token = localStorage.getItem("token");
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="ver-ventas-asesor" element={<TotalVentasAsesorPage />} />
             <Route path="editar-venta/:idVenta" element={<EditarVenta />} />
             <Route path="ver-ventas/:asesorId" element={<VerVentaAsesor />} />
+            <Route path="/reporte-excel-por-fecha" element={<GenerarReporteFecha />} />
 
 
           </Route>

@@ -81,6 +81,11 @@ const opcionesFranjaInstalacion = [
   {label:"PM", value:"PM"},
 ]
 
+const opcionTodoClaro = [
+  { value: "SI", label: "SI" },
+  { value: "NO", label: "NO" },
+]
+
 const validarTelefono = (telefono) => {
   if (!/^\d+$/.test(telefono)) {
     return "El teléfono debe contener solo números.";
@@ -704,9 +709,11 @@ export default function CrearVenta() {
                   placeholder="$"
                 />
 
-                <Input
+                <Select
                   label="Todo Claro"
                   name="todo_claro"
+                  options={opcionTodoClaro}
+                  required
                   value={formData.todo_claro}
                   onChange={handleInputChange}
                 />

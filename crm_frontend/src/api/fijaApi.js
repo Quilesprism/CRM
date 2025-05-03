@@ -73,7 +73,7 @@ export const updateVenta = async (idVenta, data) => {
   }
 };
 
-export const getVentasByAsesorId = async (asesorCedula) => { // Cambia el nombre del parámetro para claridad
+export const getVentasByAsesorId = async (asesorCedula) => { 
   try {
     const response = await axios.get(`${API_URL}/api/venta_fija/asesor/`, {
       ...getAuthHeaders(),
@@ -82,6 +82,32 @@ export const getVentasByAsesorId = async (asesorCedula) => { // Cambia el nombre
     return response.data;
   } catch (error) {
     console.error("Error al obtener las ventas del asesor:", error);
+    throw error;
+  }
+};
+export const generarReporteExcel = async (fechaInicio, fechaFin) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/api/historico_fija/reporte_excel/`, 
+      {
+        ...getAuthHeaders(),
+        params: {
+          fecha_inicio: fechaInicio,
+          fecha_fin: fechaFin,
+        },
+        responseType: 'blob',
+      }
+    );
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `reporte_ventas_${fechaInicio}_a_${fechaFin}.xlsx`); 
+    document.body.appendChild(link);
+    link.click();
+    link.remove(); 
+  } catch (error) {
+    console.error("Error al generar el reporte de Excel:", error);
     throw error;
   }
 };

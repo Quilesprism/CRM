@@ -38,6 +38,11 @@ function Layout() {
               <i data-feather="user"></i><span>Asesores Fija</span>
             </Link>
           </li>
+          <li className="navbar__item">
+            <Link to="/reporte-excel-por-fecha" className="navbar__link">
+              <i data-feather="folder"></i><span>Generar reportes Fija</span>
+            </Link>
+          </li>
 
 
          
