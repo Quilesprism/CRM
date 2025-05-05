@@ -1,30 +1,22 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
-import "../assets/styles/Login.css"; 
+import { useAuth } from "../context/AuthContext";
+import "../assets/styles/Login.css";
 
 export default function LoginPage() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const data = await loginUser({ usuario, password });
       console.log("Token recibido:", data);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({
-        id: data.user_id,
-        usuario: data.usuario,
-        nombres: data.nombres,
-        cedula: data.cedula,
-        permisos: data.permisos,
-        estado: data.estado,
-        nuevo: data.nuevo,
-      }));      
-
-      navigate("/"); 
+      login(data); 
+      navigate("/");
     } catch (error) {
       console.error(error);
       alert("Login fallido");
@@ -32,7 +24,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-wrapper"> {/* Nueva clase para aislar el fondo */}
+    <div className="login-wrapper">
       <div className="login-container">
         <form onSubmit={handleLogin} noValidate>
           <h1>Iniciar Sesión</h1>

@@ -1,12 +1,9 @@
 // src/pages/VerVenta.jsx
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getVentaById } from "../api/fijaApi"; // Importa la nueva función
+import { getVentaById } from "../api/fijaApi"; 
 import Input from "../components/forms/Input";
-import Select from "../components/forms/Select";
 import Textarea from "../components/forms/Textarea";
-import FileInput from "../components/forms/FileInput";
-import Checkbox from "../components/forms/Checkbox";
 import Card from "../components/ui/Card";
 
 function VerVenta() {
@@ -104,11 +101,11 @@ function VerVenta() {
             <img
               src={ventaData.link}
               alt="Validación de Identidad"
-              className="img-fluid" // Añade clases para hacerlo responsivo si es necesario
+              className="img-fluid" 
               style={{ maxWidth: '300px', maxHeight: '300px', display: 'block' }}
               onError={(e) => {
-                e.target.onerror = null; // Evita bucles infinitos de error
-                e.target.src = "https://via.placeholder.com/150?text=Imagen+No+Disponible"; // Muestra una imagen de reemplazo
+                e.target.onerror = null; 
+                e.target.src = "https://via.placeholder.com/150?text=Imagen+No+Disponible"; 
               }}
             />
             

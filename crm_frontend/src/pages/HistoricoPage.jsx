@@ -39,10 +39,12 @@ function HistoricoPage() {
   };
 
   const ventasFiltradas = ventas.filter((venta) => {
+    const asesor = venta.nombre_asesor?.toLowerCase() || "";
     const nombre = venta.nombres_apellidos_cliente?.toLowerCase() || "";
     const cedula = venta.cedula_cliente?.toString() || "";
     const telefono = venta.telefono_grabacion_contrato?.toString() || "";
     return (
+      asesor.includes(busqueda) ||
       nombre.includes(busqueda) ||
       cedula.includes(busqueda) ||
       telefono.includes(busqueda)
@@ -62,15 +64,12 @@ function HistoricoPage() {
           <h1>Ventas Totales</h1>
           <input
             type="text"
-            placeholder="Buscar por nombre, cédula o teléfono"
+            placeholder="Buscar por asesor, nombre, cédula o teléfono"
             value={busqueda}
             onChange={handleBusqueda}
             className="buscador"
           />
         </div>
-        <p>(Haz clic en "Ver" para más detalles)</p>
-
-
       <main>
         <table>
           <thead>

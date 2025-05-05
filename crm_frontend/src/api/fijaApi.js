@@ -1,4 +1,4 @@
-const API_URL = "https://1cc3rjkx-8000.use2.devtunnels.ms";
+const API_URL = "http://127.0.0.1:8000";
 import axios from "axios";
 
 function getToken() {

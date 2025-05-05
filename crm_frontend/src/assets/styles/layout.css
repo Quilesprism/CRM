@@ -21,8 +21,8 @@ body {
 
 .navbar {
   position: fixed;
-  top: var(--spacer);
-  left: var(--spacer);
+  top: 0;
+  left: 0;
   background: #fff;
   border-radius: var(--border-radius);
   padding: var(--spacer) 0;
@@ -57,6 +57,7 @@ body {
 .navbar__link i {
   stroke-width: 2;
   width: 20px;
+  justify-content: flex-start;
   height: 20px;
 }
 
