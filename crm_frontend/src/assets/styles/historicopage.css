@@ -114,32 +114,32 @@ table tbody td[data-title="Estado"] {
 
 /* Estilos para el span dentro de la celda de estado */
 table tbody td[data-title="Estado"] span.estado-celda {
-  display: inline-block; /* Permite aplicar width y height si es necesario */
-  padding: 4px 8px; /* Ajusta el padding dentro del "cuadrito" */
-  border-radius: 6px; /* O el radio que prefieras para el "cuadrito" */
-  font-size: 0.9rem; /* Ajusta el tamaño de la fuente si es necesario */
-  color: #fff; /* Color del texto dentro del "cuadrito" */
+  display: inline-block; 
+  padding: 4px 8px; 
+  border-radius: 6px; 
+  font-size: 0.9rem; 
+  color: #fff; 
 }
 
 /* Clases de color específicas */
 .table-warning {
-  background-color: #ffc107; /* Amarillo */
+  background-color: #ffc107; 
 }
 
 .table-info {
-  background-color: #17a2b8; /* Cian */
+  background-color: #17a2b8; 
 }
 
 .table-danger {
-  background-color: #dc3545; /* Rojo */
+  background-color: #dc3545; 
 }
 
 .table-success {
-  background-color: #28a745; /* Verde */
+  background-color: #28a745; 
 }
 
-/* Si tienes un estado por defecto sin clase, puedes añadir un estilo base */
+
 table tbody td[data-title="Estado"] span.estado-celda:not([class*="table-"]) {
-  background-color: #f8f9fa; /* Gris claro por defecto */
+  background-color: #f8f9fa; 
   color: #495057;
 }

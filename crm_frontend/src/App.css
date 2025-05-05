@@ -1,0 +1,6 @@
+.app-background {
+    background-color: linear-gradient(to right, #f72b4d, #f75f5f); 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }

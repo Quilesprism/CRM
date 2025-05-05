@@ -1,0 +1,11 @@
+.react-datepicker__day.festivo {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 0.3rem;
+  }
+  
+  .react-datepicker__day.domingo {
+    background-color: #fefefe;
+    color: #d9534f;
+  }
+  

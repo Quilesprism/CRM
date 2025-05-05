@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getVentasByAsesorId } from "../api/fijaApi";
 import Card from "../components/ui/Card";
 import Input from "../components/forms/Input";
-
-import Select from "../components/forms/Select";
 import Textarea from "../components/forms/Textarea";
-import FileInput from "../components/forms/FileInput";
-import Checkbox from "../components/forms/Checkbox";
 
 function VerVentaAsesor() {
   const [ventas, setVentas] = useState([]);
