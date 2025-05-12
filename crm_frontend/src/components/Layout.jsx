@@ -16,12 +16,6 @@ function Layout() {
     permisos.includes("backoficce fija") ||
     permisos.includes("supervisor fija");
 
-  // Si el usuario no tiene permisos de administrador, redirige a la página de login
-  useEffect(() => {
-    if (!user?.permisos?.includes("administrador")) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
 
   useEffect(() => {
     feather.replace();

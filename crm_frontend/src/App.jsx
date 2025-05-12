@@ -37,9 +37,12 @@ const PermissionRoute = ({ requiredPermissions }) => {
 
 function App() {
   const { user } = useAuth();
+
+  // Si el usuario aún no está cargado, no renderices nada (evita el bucle infinito)
+  if (!user) return null;
+
   const token = localStorage.getItem("token");
   const permisos = user?.permisos || [];
-
   const isAdmin = permisos.includes("administrador");
   const isBackoffice = permisos.includes("backoficce fija");
   const isSupervisor = permisos.includes("supervisor fija");
@@ -54,11 +57,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={!token ? <LoginPage /> : <Navigate to={getHomePage()} />} />
+        <Route
+          path="/login"
+          element={!token ? <LoginPage /> : user ? <Navigate to={getHomePage()} replace /> : null}
+        />
 
         {/* Solo admin puede registrar usuarios */}
-        
-
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to={getHomePage()} />} />
@@ -75,11 +79,11 @@ function App() {
               </>
             )}
 
-
             {isAdmin && (
               <>
-          <Route path="registrar-usuario" element={<RegistrarUsuario />} />
-            </>)}
+                <Route path="registrar-usuario" element={<RegistrarUsuario />} />
+              </>
+            )}
 
             {/* Supervisor, Backoffice y Admin ven todo */}
             {(isSupervisor || isBackoffice || isAdmin) && (
@@ -96,7 +100,12 @@ function App() {
         </Route>
 
         {/* Ruta por defecto */}
-        <Route path="*" element={<Navigate to={token ? getHomePage() : "/login"} />} />
+        <Route
+          path="*"
+          element={
+            token ? (user ? <Navigate to={getHomePage()} replace /> : null) : <Navigate to="/login" replace />
+          }
+        />
       </Routes>
     </Router>
   );

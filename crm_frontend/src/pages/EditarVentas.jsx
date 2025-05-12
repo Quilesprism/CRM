@@ -447,22 +447,6 @@ export default function EditarVenta() {
                                     onChange={handleInputChange}
                                 />
                                 <Input
-                                    label="Fecha de expedición"
-                                    name="fecha_expedicion"
-                                    type="date"
-                                    max={hoy}
-                                    required
-                                    value={formData.fecha_expedicion?.split("T")[0] || ""}
-                                    onChange={handleInputChange}
-                                />
-                                <Input
-                                    label="Lugar de expedición"
-                                    name="lugar_expedicion"
-                                    required
-                                    value={formData.lugar_expedicion}
-                                    onChange={handleInputChange}
-                                />
-                                <Input
                                     label="Correo Electrónico"
                                     name="correo_electronico"
                                     type="email"
@@ -880,7 +864,7 @@ export default function EditarVenta() {
                                     onChange={handleInputChange}
                                 />
                                 <Textarea
-                                    label="Detalles Adicionales"
+                                    label="Observacion del Backoffice"
                                     name="detalles"
                                     rows="3"
                                     value={formData.detalles}

@@ -37,7 +37,7 @@ export const opcionesTipoDocumento = [
   ];
   
   export const opcionesAdicionales = [
-    { value: "", label: "Ninguno" },
+    
     { value: "revista_15_minutos", label: "Revista 15 minutos" },
     { value: "hot_pack", label: "Hot pack" },
     { value: "golden_premier_hd", label: "Golden Premier HD" },

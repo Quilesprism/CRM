@@ -365,23 +365,6 @@ export default function CrearVenta() {
                                     value={formData.cedula_cliente}
                                     onChange={handleInputChange}
                                 />
-                                <Input
-                                    label="Fecha de expedición"
-                                    name="fecha_expedicion"
-                                    type="date"
-                                    max={hoy}
-                                    required
-                                    value={formData.fecha_expedicion}
-                                    onChange={handleInputChange}
-                                />
-                                <Input
-                                    label="Lugar de expedición"
-                                    name="lugar_expedicion"
-                                    required
-                                    value={formData.lugar_expedicion}
-                                    onChange={handleInputChange}
-
-                                    />
                                     <Input
                                         label="Correo Electrónico"
                                         name="correo_electronico"
@@ -491,12 +474,14 @@ export default function CrearVenta() {
                                     <Input
                                         label="Comunidad"
                                         name="comunidad"
+                                        required
                                         value={formData.comunidad}
                                         onChange={handleInputChange}
                                     />
                                     <Input
                                         label="Nodo"
                                         name="nodo"
+                                        required
                                         value={formData.nodo}
                                         onChange={handleInputChange}
                                     />
@@ -740,11 +725,12 @@ export default function CrearVenta() {
                                         label="Observaciones"
                                         name="observacion"
                                         rows="3"
+                                        required
                                         value={formData.observacion}
                                         onChange={handleInputChange}
                                     />
                                     <Textarea
-                                        label="Detalles Adicionales"
+                                        label="Observacion del Backoffice"
                                         name="detalles"
                                         rows="3"
                                         value={formData.detalles}

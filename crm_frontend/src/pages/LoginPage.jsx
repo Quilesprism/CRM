@@ -14,7 +14,6 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const data = await loginUser({ usuario, password });
-      console.log("Token recibido:", data);
       login(data); 
       navigate("/");
     } catch (error) {
