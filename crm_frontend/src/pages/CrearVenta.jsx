@@ -24,8 +24,7 @@ import {
     serviciosOptions,
     opcionesFranjaInstalacion,
     opcionTodoClaro,
-    estadosOptions,
-    subestadosOptions,
+   
     validarTelefono,
     validarTelefonosNoIguales,
     validarUltimosCuatroDigitos,
@@ -103,8 +102,6 @@ export default function CrearVenta() {
         adicionales_seleccionados: [],
     });
     const [mostrarTerceroCampos, setMostrarTerceroCampos] = useState(false);
-    const [opcionesNombreTercero, setOpcionesNombreTercero] = useState([]);
-    const [opcionesTelefonoTercero, setOpcionesTelefonoTercero] = useState([]);
     const [errores, setErrores] = useState({});
 
     useEffect(() => {
@@ -134,11 +131,6 @@ export default function CrearVenta() {
         }
     }, []);
 
-    const esDiaNoLaboral = (date) => {
-        const dia = date.getDay();
-        const fechaStr = date.toISOString().split("T")[0];
-        return dia === 0 || festivos.some((f) => f.date === fechaStr);
-    };
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -688,7 +680,7 @@ export default function CrearVenta() {
                                         </>
                                     )}
                                     <div className="mb-3">
-                                        <label htmlFor="fecha_instalacion" className="form-label-separated">Fecha de Instalación</label>
+                                        <label htmlFor="fecha_instalacion" className="form-label-separated">Fecha de Agenda</label>
                                         <Input
                                             id="fecha_instalacion"
                                             name="fecha_instalacion"
@@ -698,7 +690,7 @@ export default function CrearVenta() {
                                         />
                                     </div>
                                     <Select
-                                        label="Franja de Instalación"
+                                        label="Franja"
                                         name="franja_instalacion"
                                         options={opcionesFranjaInstalacion}
                                         required
@@ -727,13 +719,6 @@ export default function CrearVenta() {
                                         rows="3"
                                         required
                                         value={formData.observacion}
-                                        onChange={handleInputChange}
-                                    />
-                                    <Textarea
-                                        label="Observacion del Backoffice"
-                                        name="detalles"
-                                        rows="3"
-                                        value={formData.detalles}
                                         onChange={handleInputChange}
                                     />
                                 </div>
