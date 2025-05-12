@@ -48,7 +48,8 @@ class Historico_Fija(models.Model):
     tipo_solicitud = models.CharField(max_length=100, blank=True, null=True)
     detalles = models.TextField(blank=True, null=True)
     usuario_modificado = models.CharField(max_length=100, default="Sistema", blank=True, null=True)
-
+    cuenta = models.IntegerField(max_length=8, blank=True, null=True)
+    orden_trabajo = models.IntegerField(max_length=9, blank=True, null=True)
     def __str__(self):
         return str(self.id_venta)
 
@@ -102,6 +103,8 @@ class Venta_fija(models.Model):
     tipo_solicitud = models.CharField(max_length=100, blank=True, null=True)
     detalles = models.TextField(blank=True, null=True)
     usuario_modificado = models.CharField(max_length=100, default="Sistema", blank=True, null=True)
+    cuenta = models.IntegerField(max_length=8, blank=True, null=True)
+    orden_trabajo = models.IntegerField(max_length=9, blank=True, null=True)
 
 
     def __str__(self):

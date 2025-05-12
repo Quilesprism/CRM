@@ -104,13 +104,10 @@ function VerVenta() {
               className="img-fluid" 
               style={{ maxWidth: '300px', maxHeight: '300px', display: 'block' }}
               onError={(e) => {
-<<<<<<< HEAD
-                e.target.onerror = null; 
-                e.target.src = "https://via.placeholder.com/150?text=Imagen+No+Disponible"; 
-=======
+
                 e.target.onerror = null;
                 e.target.src = "https://via.placeholder.com/150?text=Imagen+No+Disponible";
->>>>>>> 01249b98a90d50067d73f8314b069b5e09bf63f7
+
               }}
             />
             

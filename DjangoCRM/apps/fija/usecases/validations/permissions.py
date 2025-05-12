@@ -1,45 +1,71 @@
-from rest_framework.permissions import BasePermission
+from rest_framework import permissions
 
-class CanCreateReadPermission(BasePermission):
+class CanCreateReadPermission(permissions.BasePermission):
     """
-    Usuarios con permiso 12 pueden GET/POST; permiso 1 (administrador) puede todo.
-    """
-    def has_permission(self, request, view):
-        # bypass total para el admin (permiso 1)
-        if request.user.permisos.filter(id=1).exists():
-            return True
-
-        # para GET y POST, los 12 tienen acceso
-        if request.method in ['GET', 'POST']:
-            return request.user.permisos.filter(id=12).exists()
-
-        return False
-
-
-class CanEditDeletePermission(BasePermission):
-    """
-    Usuarios con permiso 10 pueden PUT/DELETE; permiso 1 (administrador) puede todo.
+    Permite acceso a operaciones de lectura (list, retrieve) y reportes
+    para usuarios con roles específicos.
     """
     def has_permission(self, request, view):
-        # bypass total para el admin (permiso 1)
-        if request.user.permisos.filter(id=1).exists():
-            return True
+        if not request.user.is_authenticated:
+            return False
+            
+        permisos = request.user.permisos.all() if hasattr(request.user, 'permisos') else []
+        permisos_nombres = [p.nombre for p in permisos]
+            
+        return (
+            'administrador' in permisos_nombres or
+            'backoficce fija' in permisos_nombres or
+            'supervisor fija' in permisos_nombres or
+            'asesor fija' in permisos_nombres  
+        )
 
-        # para PUT y DELETE, los 10 tienen acceso
-        if request.method in ['PUT', 'PATCH', 'DELETE']:
-            return request.user.permisos.filter(id=10).exists()
-
-        return False
-
-
-class SupervisorPermission(BasePermission):
+class CanEditDeletePermission(permissions.BasePermission):
     """
-    Usuarios con permiso 9 (Supervisor) o permiso 1 (administrador) pueden todo.
+    Permite operaciones de modificación (update, partial_update, destroy)
+    para usuarios con roles de administrador o backoffice.
     """
     def has_permission(self, request, view):
-        # bypass total para el admin (permiso 1)
-        if request.user.permisos.filter(id=1).exists():
-            return True
+        if not request.user.is_authenticated:
+            return False
+            
+        permisos = request.user.permisos.all() if hasattr(request.user, 'permisos') else []
+        permisos_nombres = [p.nombre for p in permisos]
+            
+        return (
+            'administrador' in permisos_nombres or
+            'backoficce fija' in permisos_nombres
+        )
 
-        # supervisores (id 9)
-        return request.user.permisos.filter(id=9).exists()
+class SupervisorPermission(permissions.BasePermission):
+    """
+    Otorga permisos específicos para supervisores.
+    """
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+            
+        permisos = request.user.permisos.all() if hasattr(request.user, 'permisos') else []
+        permisos_nombres = [p.nombre for p in permisos]
+            
+        return (
+            'supervisor fija' in permisos_nombres or
+            'administrador' in permisos_nombres
+        )
+
+class AsesorPermission(permissions.BasePermission):
+    """
+    Otorga permisos específicos para asesores para crear y subir ventas.
+    """
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+            
+        permisos = request.user.permisos.all() if hasattr(request.user, 'permisos') else []
+        permisos_nombres = [p.nombre for p in permisos]
+            
+        return (
+            'asesor fija' in permisos_nombres or
+            'supervisor fija' in permisos_nombres or
+            'backoficce fija' in permisos_nombres or
+            'administrador' in permisos_nombres
+        )

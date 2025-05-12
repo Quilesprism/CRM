@@ -93,17 +93,7 @@ function HistoricoPage() {
   return (
     <div className="historico-container">
       <div className="buscador-container">
-<<<<<<< HEAD
-          <h1>Ventas Totales</h1>
-          <input
-            type="text"
-            placeholder="Buscar por asesor, nombre, cédula o teléfono"
-            value={busqueda}
-            onChange={handleBusqueda}
-            className="buscador"
-          />
-        </div>
-=======
+
         <h1>Ventas Totales</h1>
         <input
           type="text"
@@ -118,7 +108,6 @@ function HistoricoPage() {
         </div>
       </div>
 
->>>>>>> 01249b98a90d50067d73f8314b069b5e09bf63f7
       <main>
         <table>
           <thead>

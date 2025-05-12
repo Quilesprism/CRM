@@ -1,9 +1,7 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://1cc3rjkx-8000.use2.devtunnels.ms";
 import axios from "axios";
 
-function getToken() {
-  return localStorage.getItem("token");
-}
+
 
 const getAuthHeaders = () => ({
   headers: {
@@ -13,7 +11,7 @@ const getAuthHeaders = () => ({
 
 export async function fetchHistoricoFija() {
   try {
-    const response = await axios.get(`${API_URL}/api/venta_fija/`, getAuthHeaders()); // Usamos la misma URL
+    const response = await axios.get(`${API_URL}/api/venta_fija/`, getAuthHeaders()); 
     return response.data;
   } catch (error) {
     console.error("Error en fetchHistoricoFija:", error);
@@ -61,11 +59,13 @@ export const getVentaById = async (idVenta) => {
 
 export const updateVenta = async (idVenta, data) => {
   try {
-    const response = await axios.put( // Usamos PUT para actualizar todos los campos
+    console.log(data)
+    const response = await axios.patch( 
       `${API_URL}/api/venta_fija/${idVenta}/`,
       data,
       getAuthHeaders()
     );
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error(`Error al actualizar la venta con ID ${idVenta}:`, error);

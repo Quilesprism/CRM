@@ -1,4 +1,3 @@
-// src/hooks/useFetchDepartamentosCiudades.js
 import { useState, useEffect } from "react";
 import { getDepartamentos, getCiudadesPorDepartamento } from "../api/fijaApi.js";
 

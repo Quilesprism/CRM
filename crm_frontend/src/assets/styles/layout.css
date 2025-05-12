@@ -3,7 +3,7 @@
 :root {
   --border-radius: 10px;
   --spacer: 1rem;
-  --primary: #406ff3;
+  --primary: #d60000;
   --text: #6a778e;
   --link-height: calc(var(--spacer) * 3.5);
   --transition: 250ms ease all;
@@ -41,6 +41,8 @@ body {
 .navbar__item {
   position: relative;
 }
+
+
 
 .navbar__link {
   display: flex;
@@ -95,4 +97,22 @@ body {
   flex-grow: 1;
   background-color: #ecf0f1;
   min-height: 100vh;
+}
+.logout-button {
+  color: #fff;
+  background-color: #e74c3c; /* rojo */
+  border: none;
+  width: 100%;
+  height: var(--link-height);
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: calc(var(--border-radius) * 1.5);
+}
+
+.logout-button:hover {
+  background-color: #c0392b; 
+}
+
+.navbar__item.logout {
+  margin-top: auto;
 }

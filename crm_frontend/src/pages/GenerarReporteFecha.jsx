@@ -1,4 +1,3 @@
-// src/pages/GenerarReporteFecha.jsx
 import React, { useState } from 'react';
 import { generarReporteExcel } from '../api/fijaApi';
 import Input from '../components/forms/Input';

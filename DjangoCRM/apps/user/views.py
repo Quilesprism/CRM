@@ -11,14 +11,12 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterView(APIView):
-    permission_classes = [IsAuthenticated]  # Solo usuarios autenticados pueden acceder
+    permission_classes = [IsAuthenticated]  
 
     def post(self, request):
-        # Verificar si el usuario autenticado es un administrador
         if not request.user.is_staff:
             return Response({"error": "Solo los administradores pueden registrar usuarios."}, status=status.HTTP_403_FORBIDDEN)
 
-        # Si el usuario es admin, proceder con el registro
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

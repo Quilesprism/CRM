@@ -18,5 +18,5 @@ function Checkbox({ label, name, value, checked, onChange }) {
     </div>
   );
 }
-
+//create a checklist for aditional services
 export default Checkbox;

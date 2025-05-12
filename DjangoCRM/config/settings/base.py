@@ -86,11 +86,28 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': 'your_secret_key',  # Cambia esto por una clave secreta
+    'SIGNING_KEY': SECRET_KEY,  
 }
 
-
-
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 15,  
+    'DEFAULT_CACHE_ERRORS': False,
+    'DEFAULT_USE_CACHE': 'default'
+}
+CACHE_TTL = 60 * 15 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "",  
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
+        },
+        "KEY_PREFIX": "api"
+    }
+}
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
